@@ -461,6 +461,64 @@ nav {
   text-decoration: none !important;
 }
 
+/* ── KO-FI SUPPORT BLOCK ── */
+.kofi-block {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.18);
+  border-radius: 18px;
+  padding: 22px 28px;
+  flex-wrap: wrap;
+}
+.kofi-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+  min-width: 200px;
+}
+.kofi-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.kofi-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--t0);
+  margin-bottom: 5px;
+}
+.kofi-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--t1);
+  line-height: 1.6;
+}
+.kofi-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: rgba(251,191,36,0.12);
+  border: 1px solid rgba(251,191,36,0.35);
+  border-radius: 10px;
+  color: #fbbf24;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s, border-color .15s, transform .1s;
+}
+.kofi-btn:hover {
+  background: rgba(251,191,36,0.20);
+  border-color: rgba(251,191,36,0.55);
+  transform: translateY(-1px);
+}
+
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--gb);
@@ -597,12 +655,27 @@ footer {
         <p>Bug reports, feature ideas, or just to say it's useful — always happy to hear from fellow Osmose players.</p>
         <br>
         <a href="mailto:seraphinomate@yahoo.fr">seraphinomate@yahoo.fr</a>
-        <br><br>
-        <a href="BMC_LINK_PLACEHOLDER" class="bmc-btn" target="_blank" rel="noopener">
-          ☕ Buy me a coffee
-        </a>
       </div>
 
+    </div>
+
+    <!-- KO-FI SUPPORT BLOCK -->
+    <div class="kofi-block">
+      <div class="kofi-left">
+        <span class="kofi-icon">☕</span>
+        <div>
+          <div class="kofi-title">This tool took a lot of hours.</div>
+          <div class="kofi-sub">It's free and always will be — but if it saved you time or made your Osmose sessions better, a small contribution means a lot.</div>
+        </div>
+      </div>
+      <a href="https://ko-fi.com/seraphinomate" class="kofi-btn" target="_blank" rel="noopener">
+        Support the project · Ko-fi
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </a>
     </div>
   </section>
 
