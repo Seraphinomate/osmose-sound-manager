@@ -107,6 +107,12 @@ p strong{color:var(--t0);font-weight:500}
 .req .v{font-size:14px;color:var(--t0)}
 .req .s{font-size:12.5px;color:var(--t2);margin-top:3px}
 
+/* EXPECTATIONS */
+.expect{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:26px;
+  margin-top:40px;padding-top:30px;border-top:1px solid var(--gb)}
+.expect div{font-size:13.5px;color:var(--t1);line-height:1.6}
+.expect b{display:block;color:var(--t0);font-weight:500;font-size:13.5px;margin-bottom:6px}
+
 /* SUPPORT */
 .support{border:1px solid rgba(240,180,41,.30);border-radius:14px;
   padding:38px 34px;margin-top:8px;
@@ -312,20 +318,43 @@ footer a{color:var(--t1)}
 <section id="about">
   <div class="shell">
     <div class="kick">About</div>
-    <h2>Who made this</h2>
+    <h2>Who made this, and what to expect</h2>
 
     <div class="about">
       <div>
         <h3>Jonathan Pulichino</h3>
-        <p>Osmose owner, musician, and occasional builder of tools I wish existed. OSM started
-        as something I made for my own instrument and kept growing. I hope it makes your
-        sessions smoother.</p>
+        <p>Osmose owner, musician, and occasional builder of tools I wish existed. This one
+        started as something I made for my own instrument and kept growing. I hope it makes
+        your sessions smoother.</p>
+        <p>It's a side project built on evenings and weekends — not a product, and not a
+        company. That shapes what follows.</p>
       </div>
       <div>
-        <h3>Get in touch</h3>
-        <p>Bug reports, feature ideas, or just to say it's useful — always happy to hear from
-        fellow Osmose players.</p>
-        <p><a href="mailto:seraphinomate@yahoo.fr">seraphinomate@yahoo.fr</a></p>
+        <h3>Report a bug or suggest a feature</h3>
+        <p>Everything goes through the issue tracker on GitHub. It's public, so other players
+        can see what's already been raised and add to it.</p>
+        <p><a href="https://github.com/Seraphinomate/osmose-sound-manager/issues">Open an issue on GitHub</a></p>
+        <p>Prefer not to use GitHub? Ko-fi messages reach me too.</p>
+      </div>
+    </div>
+
+    <div class="expect">
+      <div>
+        <b>I read everything</b>
+        Every bug report and idea gets read. Clear reproduction steps and your firmware
+        version make a fix far more likely.
+      </div>
+      <div>
+        <b>I can't promise a reply</b>
+        This is free software maintained by one person with one Osmose. Some issues get
+        fixed the same week, some sit for months, some never get built. That's the honest
+        deal.
+      </div>
+      <div>
+        <b>Make it yours</b>
+        It's a single HTML file under an MIT licence — open it in any text editor and change
+        it. Fork it, rebuild it, ship your own version. You don't need my permission and you
+        don't need to wait for me.
       </div>
     </div>
 
