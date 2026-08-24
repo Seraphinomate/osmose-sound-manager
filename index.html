@@ -3,690 +3,344 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jonathan Pulichino · OSM Sound Manager</title>
-<meta name="description" content="OSM Sound Manager — a free preset manager for the Expressive E Osmose synthesizer, by Jonathan Pulichino.">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-
+<title>Osmose Sound Manager — preset manager &amp; pedal routing for the Expressive E Osmose</title>
+<meta name="description" content="Osmose Sound Manager is a free browser-based preset manager for the Expressive E Osmose synthesizer. Search 609 presets, save macro snapshots, and route an expression pedal to six macros at once. One HTML file, no install.">
+<meta name="keywords" content="Expressive E Osmose, Osmose preset manager, EaganMatrix, Osmose expression pedal, Web MIDI, Osmose presets">
+<meta property="og:title" content="Osmose Sound Manager — for the Expressive E Osmose">
+<meta property="og:description" content="Free preset manager and expression-pedal router for the Expressive E Osmose. One HTML file, no install.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://seraphinomate.github.io/OSM/">
+<link rel="canonical" href="https://seraphinomate.github.io/OSM/">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --bg:#080808;
+  --g0:rgba(255,255,255,0.03); --g1:rgba(255,255,255,0.05);
+  --gb:rgba(255,255,255,0.09); --gb2:rgba(255,255,255,0.16);
+  --acc:#7EB8F7; --acc-glow:rgba(126,184,247,0.25); --acc2:#A78BFA;
+  --gold:#f0b429;
+  --t0:rgba(255,255,255,0.93); --t1:rgba(255,255,255,0.56);
+  --t2:rgba(255,255,255,0.30);
+  --ok:#4ade80; --warn:#fbbf24;
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t0);
+  font-family:'DM Sans',-apple-system,system-ui,sans-serif;
+  font-weight:300;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:var(--noise);
+  pointer-events:none;z-index:1}
+a{color:var(--acc);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:4px}
+.shell{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,44px);position:relative;z-index:2}
 
-:root {
-  --bg:   #070709;
-  --bg1:  rgba(255,255,255,0.03);
-  --bg2:  rgba(255,255,255,0.06);
-  --gb:   rgba(255,255,255,0.09);
-  --gb2:  rgba(255,255,255,0.16);
-  --acc:  #7EB8F7;
-  --acc2: #A78BFA;
-  --t0:   rgba(255,255,255,0.93);
-  --t1:   rgba(255,255,255,0.56);
-  --t2:   rgba(255,255,255,0.28);
-  --ok:   #4ade80;
-}
+/* NAV */
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
+  background:rgba(8,8,8,.78);border-bottom:1px solid var(--gb)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;
+  padding:15px 0;max-width:1080px;margin:0 auto;padding-left:clamp(20px,5vw,44px);
+  padding-right:clamp(20px,5vw,44px)}
+.brand{display:flex;align-items:center;gap:9px;font-family:'DM Mono',monospace;
+  font-size:12px;letter-spacing:.1em;color:var(--t0)}
+.brand i{width:7px;height:7px;border-radius:50%;background:var(--acc);
+  box-shadow:0 0 10px var(--acc-glow);font-style:normal}
+.brand em{font-style:normal;color:var(--t2)}
+.nav-l{display:flex;gap:22px;align-items:center;font-size:13px}
+.nav-l a{color:var(--t1)}
+.nav-l a:hover{color:var(--t0);text-decoration:none}
 
-html { scroll-behavior: smooth; }
+/* HERO */
+header{padding:88px 0 66px;border-bottom:1px solid var(--gb)}
+.badge{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--t1);
+  border:1px solid var(--gb);border-radius:100px;padding:5px 13px 5px 10px;margin-bottom:28px}
+.badge i{width:5px;height:5px;border-radius:50%;background:var(--ok);font-style:normal}
+h1{font-size:clamp(38px,6.2vw,64px);font-weight:300;line-height:1.03;letter-spacing:-.032em}
+h1 em{font-style:normal;color:var(--acc);font-weight:400}
+.lede{font-size:17px;color:var(--t1);max-width:56ch;margin-top:24px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:36px}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:500;
+  padding:12px 22px;border-radius:8px;border:1px solid transparent;transition:all .16s}
+.btn-p{background:var(--acc);color:#07131f}
+.btn-p:hover{background:#9ac9fa;text-decoration:none}
+.btn-s{border-color:var(--gb2);color:var(--t0)}
+.btn-s:hover{border-color:var(--acc);color:var(--acc);text-decoration:none}
+.cta-note{font-family:'DM Mono',monospace;font-size:11px;color:var(--t2);letter-spacing:.05em}
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--t0);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+/* SPIDER HERO STRIP */
+.sweep{margin-top:52px;border:1px solid var(--gb);border-radius:12px;padding:24px 20px 16px;
+  background:radial-gradient(ellipse at 22% 50%,rgba(126,184,247,.06),transparent 70%);
+  overflow-x:auto}
+.sweep svg{display:block;width:100%;min-width:520px;height:auto}
+.sweep-cap{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--t2);
+  letter-spacing:.06em;margin-top:14px}
+.sw-t{font-family:'DM Mono',monospace;font-size:10px;fill:var(--t1)}
+.sw-d{font-family:'DM Mono',monospace;font-size:9px;fill:var(--t2)}
+@keyframes ped{0%,100%{transform:translateX(0)}50%{transform:translateX(388px)}}
+.ped-head{animation:ped 5.5s ease-in-out infinite}
 
-/* ── NOISE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
+/* SECTIONS */
+section{padding:72px 0;border-bottom:1px solid var(--gb)}
+.kick{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--acc);margin-bottom:13px;opacity:.85}
+h2{font-size:30px;font-weight:300;letter-spacing:-.022em;margin-bottom:14px}
+h3{font-size:15.5px;font-weight:500;margin-bottom:7px}
+p{color:var(--t1);max-width:66ch;margin-bottom:13px}
+p strong{color:var(--t0);font-weight:500}
 
-/* ── AMBIENT GLOW ── */
-.glow-orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.18;
-}
-.glow-1 { width: 600px; height: 600px; background: #7EB8F7; top: -200px; right: -200px; animation: drift1 18s ease-in-out infinite; }
-.glow-2 { width: 400px; height: 400px; background: #A78BFA; bottom: 0; left: -150px; animation: drift2 22s ease-in-out infinite; }
+/* FEATURE GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:1px;background:var(--gb);border:1px solid var(--gb);border-radius:12px;
+  overflow:hidden;margin-top:34px}
+.cell{background:var(--bg);padding:24px 22px}
+.cell .n{font-family:'DM Mono',monospace;font-size:10px;color:var(--acc);
+  letter-spacing:.1em;opacity:.7;display:block;margin-bottom:11px}
+.cell p{font-size:13.5px;margin:0;color:var(--t1)}
 
-@keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-60px,40px)} }
-@keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-60px)} }
+/* NEW LIST */
+.new{list-style:none;margin-top:28px;max-width:70ch}
+.new li{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--g0);
+  font-size:14px;color:var(--t1)}
+.new li:last-child{border-bottom:none}
+.new b{color:var(--t0);font-weight:500;flex-shrink:0;min-width:132px}
 
-/* ── LAYOUT ── */
-.wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+/* REQ */
+.req{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:22px;margin-top:30px}
+.req div{border-left:2px solid var(--gb);padding-left:15px}
+.req .k{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--t2);margin-bottom:6px}
+.req .v{font-size:14px;color:var(--t0)}
+.req .s{font-size:12.5px;color:var(--t2);margin-top:3px}
 
-/* ── NAV ── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: rgba(7,7,9,0.72);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--gb);
-  padding: 14px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  animation: fadeDown 0.6s ease both;
-}
-@keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+/* ABOUT */
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:34px;margin-top:34px}
+.about p{font-size:14px}
 
-.nav-brand {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--t1);
-}
-.nav-brand em { color: var(--acc); font-style: normal; }
+/* KOFI */
+.kofi{border:1px solid var(--gb);border-radius:12px;padding:30px 28px;margin-top:38px;
+  background:var(--g0)}
+.kofi h3{font-size:17px;font-weight:400;margin-bottom:9px}
 
-.nav-links {
-  display: flex;
-  gap: 24px;
-  list-style: none;
-}
-.nav-links a {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--t2);
-  text-decoration: none;
-  transition: color .15s;
-}
-.nav-links a:hover { color: var(--t0); }
+footer{padding:40px 0 60px;color:var(--t2);font-size:12.5px;line-height:1.8}
+footer a{color:var(--t1)}
 
-/* ── HERO ── */
-.hero {
-  padding: 160px 0 100px;
-  animation: fadeUp 0.8s 0.1s ease both;
+@media (max-width:700px){
+  header{padding:56px 0 46px}
+  section{padding:54px 0}
+  .new li{flex-direction:column;gap:3px}
+  .new b{min-width:0}
 }
-@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-
-.hero-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.30em;
-  text-transform: uppercase;
-  color: var(--acc);
-  margin-bottom: 20px;
-  opacity: 0.8;
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .ped-head{animation:none;transform:translateX(194px)}
 }
-
-.hero h1 {
-  font-size: clamp(42px, 7vw, 68px);
-  font-weight: 300;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  color: var(--t0);
-  margin-bottom: 12px;
-}
-.hero h1 strong {
-  font-weight: 500;
-  background: linear-gradient(135deg, #fff 0%, var(--acc) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-sub {
-  font-size: 16px;
-  font-weight: 300;
-  color: var(--t1);
-  line-height: 1.6;
-  max-width: 500px;
-  margin-top: 16px;
-}
-
-/* ── PRODUCT CARD ── */
-.product {
-  margin: 0 0 100px;
-  animation: fadeUp 0.8s 0.25s ease both;
-}
-
-.product-card {
-  background: var(--bg1);
-  border: 1px solid var(--gb);
-  border-radius: 24px;
-  overflow: hidden;
-  backdrop-filter: blur(20px);
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.07) inset,
-    0 32px 80px rgba(0,0,0,0.6),
-    0 0 0 1px rgba(126,184,247,0.06);
-  transition: box-shadow 0.3s ease;
-}
-.product-card:hover {
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.09) inset,
-    0 32px 80px rgba(0,0,0,0.5),
-    0 0 0 1px rgba(126,184,247,0.18),
-    0 0 60px rgba(126,184,247,0.06);
-}
-
-/* Mock UI preview */
-.product-preview {
-  background: linear-gradient(180deg, rgba(126,184,247,0.06) 0%, transparent 100%);
-  border-bottom: 1px solid var(--gb);
-  padding: 28px 28px 0;
-  position: relative;
-  overflow: hidden;
-}
-.product-preview::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(7,7,9,0.8) 100%);
-  pointer-events: none;
-}
-
-/* Tiny UI mockup */
-.mockup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--gb);
-  border-radius: 14px 14px 0 0;
-  padding: 14px;
-  min-height: 140px;
-}
-.mock-bar {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--bg2);
-}
-.mock-bar.acc { background: rgba(126,184,247,0.35); width: 40%; }
-.mock-bar.short { width: 28%; }
-.mock-bar.med { width: 55%; }
-.mock-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 6px;
-}
-.mock-card {
-  height: 36px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.07);
-  position: relative;
-  overflow: hidden;
-}
-.mock-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 15%; right: 15%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-}
-.mock-card.active {
-  border-color: rgba(126,184,247,0.4);
-  background: rgba(126,184,247,0.08);
-}
-.mock-knobs {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 5px;
-  margin-top: 4px;
-}
-.mock-knob {
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(167,139,250,0.15);
-  border: 1px solid rgba(167,139,250,0.25);
-}
-
-.product-body {
-  padding: 28px 32px 32px;
-}
-
-.product-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--acc);
-  background: rgba(126,184,247,0.10);
-  border: 1px solid rgba(126,184,247,0.22);
-  border-radius: 20px;
-  padding: 4px 12px;
-  display: inline-block;
-  margin-bottom: 14px;
-}
-
-.product-title {
-  font-size: 26px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
-}
-
-.product-desc {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--t1);
-  line-height: 1.65;
-  margin-bottom: 24px;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 28px;
-}
-@media(max-width:500px){ .features { grid-template-columns: 1fr; } }
-
-.feat {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--t1);
-  line-height: 1.5;
-}
-.feat::before {
-  content: '→';
-  color: var(--acc);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  flex-shrink: 0;
-  margin-top: 1px;
-  opacity: 0.8;
-}
-
-.product-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.btn-dl {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: var(--acc);
-  color: #06111e;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-  letter-spacing: -0.01em;
-  transition: background .15s, transform .1s, box-shadow .15s;
-  box-shadow: 0 0 24px rgba(126,184,247,0.30), 0 4px 12px rgba(0,0,0,0.4);
-}
-.btn-dl:hover {
-  background: #a0cbff;
-  transform: translateY(-1px);
-  box-shadow: 0 0 32px rgba(126,184,247,0.45), 0 6px 18px rgba(0,0,0,0.4);
-}
-.btn-dl:active { transform: translateY(0); }
-
-.btn-dl svg { width: 16px; height: 16px; flex-shrink: 0; }
-
-.btn-manual {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 11px 20px;
-  background: transparent;
-  color: var(--t1);
-  border: 1px solid var(--gb2);
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 400;
-  text-decoration: none;
-  transition: color .15s, border-color .15s, background .15s;
-}
-.btn-manual:hover {
-  color: var(--t0);
-  border-color: var(--gb2);
-  background: var(--bg2);
-}
-
-.price-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--ok);
-  background: rgba(74,222,128,0.08);
-  border: 1px solid rgba(74,222,128,0.20);
-  border-radius: 8px;
-  padding: 6px 14px;
-}
-
-/* ── COMPAT NOTE ── */
-.compat {
-  margin-top: 16px;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: var(--t2);
-}
-
-/* ── ABOUT ── */
-.about {
-  padding: 0 0 100px;
-  animation: fadeUp 0.8s 0.4s ease both;
-}
-
-.section-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.30em;
-  text-transform: uppercase;
-  color: var(--t2);
-  margin-bottom: 32px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--gb);
-}
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-@media(max-width:540px){ .about-grid { grid-template-columns: 1fr; } }
-
-.about-block {
-  background: var(--bg1);
-  border: 1px solid var(--gb);
-  border-radius: 18px;
-  padding: 24px;
-  transition: border-color .2s;
-}
-.about-block:hover { border-color: var(--gb2); }
-
-.about-block-icon {
-  font-size: 22px;
-  margin-bottom: 10px;
-  display: block;
-}
-.about-block h3 {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-.about-block p {
-  font-size: 12px;
-  color: var(--t1);
-  line-height: 1.6;
-  font-weight: 300;
-}
-.about-block a {
-  color: var(--acc);
-  text-decoration: none;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-}
-.about-block a:hover { text-decoration: underline; }
-
-/* BMC button */
-.bmc-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 12px;
-  padding: 8px 16px;
-  background: rgba(251,191,36,0.10);
-  border: 1px solid rgba(251,191,36,0.28);
-  border-radius: 8px;
-  color: #fbbf24;
-  font-size: 12px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background .15s, border-color .15s;
-}
-.bmc-btn:hover {
-  background: rgba(251,191,36,0.18) !important;
-  border-color: rgba(251,191,36,0.45) !important;
-  text-decoration: none !important;
-}
-
-/* ── KO-FI SUPPORT BLOCK ── */
-.kofi-block {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  background: rgba(251,191,36,0.06);
-  border: 1px solid rgba(251,191,36,0.18);
-  border-radius: 18px;
-  padding: 22px 28px;
-  flex-wrap: wrap;
-}
-.kofi-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex: 1;
-  min-width: 200px;
-}
-.kofi-icon {
-  font-size: 28px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.kofi-title {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--t0);
-  margin-bottom: 5px;
-}
-.kofi-sub {
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--t1);
-  line-height: 1.6;
-}
-.kofi-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 22px;
-  background: rgba(251,191,36,0.12);
-  border: 1px solid rgba(251,191,36,0.35);
-  border-radius: 10px;
-  color: #fbbf24;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background .15s, border-color .15s, transform .1s;
-}
-.kofi-btn:hover {
-  background: rgba(251,191,36,0.20);
-  border-color: rgba(251,191,36,0.55);
-  transform: translateY(-1px);
-}
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--gb);
-  padding: 28px 0 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  animation: fadeUp 0.8s 0.5s ease both;
-}
-.footer-copy {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.10em;
-  color: var(--t2);
-}
-.footer-note {
-  font-size: 11px;
-  color: var(--t2);
-  font-weight: 300;
-}
-.footer-note a { color: var(--t1); text-decoration: none; }
-.footer-note a:hover { color: var(--acc); }
 </style>
 </head>
 <body>
 
-<div class="glow-orb glow-1"></div>
-<div class="glow-orb glow-2"></div>
-
-<!-- NAV -->
 <nav>
-  <div class="nav-brand"><em>OSM</em> · Jonathan Pulichino</div>
-  <ul class="nav-links">
-    <li><a href="#download">Download</a></li>
-    <li><a href="#about">Contact</a></li>
-  </ul>
+  <div class="nav-in">
+    <div class="brand"><i></i>Osmose <em>· Sound Manager</em></div>
+    <div class="nav-l">
+      <a href="#what">Features</a>
+      <a href="#new">What's new</a>
+      <a href="#get">Download</a>
+      <a href="#about">Contact</a>
+    </div>
+  </div>
 </nav>
 
-<div class="wrap">
+<header>
+  <div class="shell">
+    <div class="badge"><i></i>Free · for Osmose owners</div>
+    <h1>Your Osmose library,<br>and a pedal that<br><em>drives six macros.</em></h1>
+    <p class="lede">Osmose Sound Manager is a free, browser-based preset manager for the
+    Expressive E Osmose. Search 609 sounds, remember your macro settings, and route one
+    expression pedal to as many destinations as you like — each with its own range.</p>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-eyebrow">Made for Osmose owners</div>
-    <h1>A tool I built<br>for <strong>my Osmose.</strong><br>Now it's yours.</h1>
-    <p class="hero-sub">OSM Sound Manager is a free, browser-based preset manager for the Expressive E Osmose — no installation, no account, no fuss.</p>
-  </section>
-
-  <!-- PRODUCT -->
-  <section class="product" id="download">
-    <div class="product-card">
-
-      <!-- Mockup preview -->
-      <div class="product-preview">
-        <div class="mockup">
-          <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
-            <div class="mock-bar acc"></div>
-            <div class="mock-bar short"></div>
-            <div class="mock-bar med"></div>
-          </div>
-          <div class="mock-grid">
-            <div class="mock-card active"></div>
-            <div class="mock-card"></div>
-            <div class="mock-card"></div>
-            <div class="mock-card"></div>
-          </div>
-          <div class="mock-knobs">
-            <div class="mock-knob"></div>
-            <div class="mock-knob"></div>
-            <div class="mock-knob"></div>
-            <div class="mock-knob"></div>
-            <div class="mock-knob"></div>
-            <div class="mock-knob"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div class="product-body">
-        <div class="product-tag">Free · v1.0</div>
-        <div class="product-title">OSM Sound Manager</div>
-        <p class="product-desc">
-          Browse your entire preset library, filter by sound character, send patches via MIDI in one click, and remember your macro settings for each preset. All in a single HTML file — open it in your browser and it works.
-        </p>
-
-        <div class="features">
-          <div class="feat">Full Factory &amp; Expansion 01 library</div>
-          <div class="feat">Filter by type, bank &amp; character tags</div>
-          <div class="feat">Per-preset macro memory &amp; snapshots</div>
-          <div class="feat">Direct MIDI send (Web MIDI API)</div>
-          <div class="feat">Playlist builder &amp; navigation</div>
-          <div class="feat">No install — one HTML file</div>
-        </div>
-
-        <div class="product-actions">
-          <a href="osmose-sound-manager_V56.html" download class="btn-dl" id="dl-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Download free
-          </a>
-          <a href="osm-manuel-bilingual.html" class="btn-manual">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:15px;height:15px;flex-shrink:0">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            User manual
-          </a>
-          <span class="price-tag">100% free · always</span>
-        </div>
-
-        <p class="compat">Compatible with Osmose firmware v2.1 · Requires Chrome or Edge (Web MIDI)</p>
-      </div>
+    <div class="cta">
+      <a class="btn btn-p" href="osmose-sound-manager_V183.html" download>Download Osmose Sound Manager</a>
+      <a class="btn btn-s" href="osm-manual-en.html">Read the manual</a>
+      <span class="cta-note">One HTML file · no install · always free</span>
     </div>
-  </section>
 
-  <!-- ABOUT -->
-  <section class="about" id="about">
-    <div class="section-label">About &amp; Contact</div>
-    <div class="about-grid">
+    <div class="sweep">
+      <svg viewBox="0 0 620 168" role="img" aria-label="Diagram: one expression pedal sweep driving six macros, FX Mix and Postgain, each across a different range">
+        <defs>
+          <linearGradient id="tr" x1="0%" x2="100%">
+            <stop offset="0%" stop-color="#7EB8F7" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="#7EB8F7" stop-opacity=".12"/>
+          </linearGradient>
+        </defs>
 
-      <div class="about-block">
-        <span class="about-block-icon">👋</span>
-        <h3>Who made this</h3>
-        <p>I'm Jonathan Pulichino — Osmose owner, musician, and occasional builder of tools I wish existed. OSM Sound Manager started as a personal project and grew from there. I hope it makes your Osmose sessions a little smoother.</p>
+        <text class="sw-t" x="0" y="12" fill="#7EB8F7">PEDAL · CC11</text>
+        <text class="sw-d" x="556" y="12">0 → 127</text>
+
+        <!-- pedal track -->
+        <rect x="0" y="22" width="480" height="3" rx="1.5" fill="rgba(255,255,255,.08)"/>
+        <g class="ped-head">
+          <rect x="0" y="18" width="4" height="11" rx="2" fill="#7EB8F7"/>
+        </g>
+
+        <!-- target rows: label, full track, active range -->
+        <g>
+          <text class="sw-t" x="0" y="56">M1 · CC12</text>
+          <rect x="96" y="50" width="480" height="6" rx="3" fill="rgba(255,255,255,.05)"/>
+          <rect x="96" y="50" width="336" height="6" rx="3" fill="url(#tr)"/>
+          <text class="sw-d" x="586" y="56">0–89</text>
+        </g>
+        <g>
+          <text class="sw-t" x="0" y="78">M3 · CC14</text>
+          <rect x="96" y="72" width="480" height="6" rx="3" fill="rgba(255,255,255,.05)"/>
+          <rect x="216" y="72" width="240" height="6" rx="3" fill="url(#tr)"/>
+          <text class="sw-d" x="586" y="78">32–95</text>
+        </g>
+        <g>
+          <text class="sw-t" x="0" y="100">M5 · CC16</text>
+          <rect x="96" y="94" width="480" height="6" rx="3" fill="rgba(255,255,255,.05)"/>
+          <rect x="336" y="94" width="240" height="6" rx="3" fill="url(#tr)"/>
+          <text class="sw-d" x="586" y="100">64–127</text>
+        </g>
+        <g>
+          <text class="sw-t" x="0" y="122">FX Mix · CC24</text>
+          <rect x="96" y="116" width="480" height="6" rx="3" fill="rgba(255,255,255,.05)"/>
+          <rect x="96" y="116" width="192" height="6" rx="3" fill="url(#tr)"/>
+          <text class="sw-d" x="586" y="122">0–51</text>
+        </g>
+        <g>
+          <text class="sw-t" x="0" y="144">Postgain · CC18</text>
+          <rect x="96" y="138" width="480" height="6" rx="3" fill="rgba(255,255,255,.05)"/>
+          <rect x="288" y="138" width="288" height="6" rx="3" fill="#f0b429" opacity=".55"/>
+          <text class="sw-d" x="586" y="144">51–127</text>
+        </g>
+      </svg>
+      <div class="sweep-cap">Spider — one pedal, up to eight destinations, independent ranges</div>
+    </div>
+  </div>
+</header>
+
+<section id="what">
+  <div class="shell">
+    <div class="kick">What it does</div>
+    <h2>Everything around the sound</h2>
+    <p>OSM doesn't edit patches — the EaganMatrix stays where it is. It handles what the
+    instrument makes hard: finding a sound among 609, keeping your macro positions, and
+    playing a set without scrolling an encoder.</p>
+
+    <div class="grid">
+      <div class="cell"><span class="n">01</span><h3>Search and filter</h3>
+        <p>Full Factory and Expansion 01 library. Filter by bank, by 14 instrument types, and
+        by 39 character tags at once — combinations that return nothing are hidden as you go.</p></div>
+      <div class="cell"><span class="n">02</span><h3>Macro memory</h3>
+        <p>Six macros per preset, remembered and re-sent when you come back. Name them, save
+        named snapshots, and freeze positions across preset changes.</p></div>
+      <div class="cell"><span class="n">03</span><h3>Spider pedal routing</h3>
+        <p>Send one expression pedal to any of six macros plus FX Mix and Postgain, each with
+        its own minimum and maximum. Reverse a range and two parameters trade against each
+        other in a single sweep.</p></div>
+      <div class="cell"><span class="n">04</span><h3>Playlists</h3>
+        <p>Ordered set lists with colours and drag-to-reorder. Arrow keys and space bar drive
+        them, so a page-turner pedal can run a whole set.</p></div>
+      <div class="cell"><span class="n">05</span><h3>Full control surface</h3>
+        <p>Pregain, Postgain, four FX params, FX Mix, EQ tilt and pivot, compressor mix,
+        sustain and sostenuto — all on one page, with two external controllers supported.</p></div>
+      <div class="cell"><span class="n">06</span><h3>One file</h3>
+        <p>No install, no account, no server. Open the HTML file in Chrome or Edge and it
+        works, online or off. Your data exports to a single JSON you own.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="new">
+  <div class="shell">
+    <div class="kick">What's new</div>
+    <h2>Since the first release</h2>
+    <p>If you downloaded OSM before, this version is a long way ahead of it.</p>
+
+    <ul class="new">
+      <li><b>Spider</b><span>Expression-pedal routing to six macros, FX Mix and Postgain, with
+        per-destination MIN and MAX. Saved inside each snapshot, so two snapshots on one preset
+        can use different pedal maps.</span></li>
+      <li><b>Snapshots</b><span>Named macro states per preset, with rename, delete, and save
+        a snapshot as a new preset.</span></li>
+      <li><b>Neutral values</b><span>Set your own starting point per preset — six macros plus
+        FX and Postgain — instead of the factory centre.</span></li>
+      <li><b>Freeze macros</b><span>Keep macro positions when changing preset, for sweeps that
+        carry across sounds.</span></li>
+      <li><b>Synth tab</b><span>Full-size macros and every global control, with a CC filter to
+        block any message you don't want sent.</span></li>
+      <li><b>Two controllers</b><span>Connect up to two external MIDI controllers and route
+        them straight through to the Osmose.</span></li>
+      <li><b>Session safety</b><span>One canonical <code>osm-session.json</code> export, an
+        unsaved-changes indicator, and a warning before you close the tab with work pending.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="get">
+  <div class="shell">
+    <div class="kick">Get it</div>
+    <h2>Download</h2>
+    <p>One file. Save it anywhere and open it in Chrome or Edge. Connect the Osmose over USB,
+    accept the MIDI permission, and choose port 2 in Settings — the manual walks through it
+    in a minute.</p>
+
+    <div class="cta">
+      <a class="btn btn-p" href="osmose-sound-manager_V183.html" download>Download Osmose Sound Manager</a>
+      <a class="btn btn-s" href="osm-manual-en.html">Read the manual</a>
+    </div>
+
+    <div class="req">
+      <div><div class="k">Browser</div><div class="v">Chrome or Edge</div>
+        <div class="s">Desktop only — Web MIDI is unavailable in Safari and on iOS</div></div>
+      <div><div class="k">Instrument</div><div class="v">Expressive E Osmose</div>
+        <div class="s">Firmware v2.1, v2.0 or v1.x — selectable in Settings</div></div>
+      <div><div class="k">Connection</div><div class="v">USB, MIDI port 2</div>
+        <div class="s">Port 1 carries notes; port 2 reaches the sound engine</div></div>
+      <div><div class="k">Price</div><div class="v">Free</div>
+        <div class="s">No account, no telemetry, no server</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="shell">
+    <div class="kick">About</div>
+    <h2>Who made this</h2>
+
+    <div class="about">
+      <div>
+        <h3>Jonathan Pulichino</h3>
+        <p>Osmose owner, musician, and occasional builder of tools I wish existed. OSM started
+        as something I made for my own instrument and kept growing. I hope it makes your
+        sessions smoother.</p>
       </div>
-
-      <div class="about-block">
-        <span class="about-block-icon">✉️</span>
+      <div>
         <h3>Get in touch</h3>
-        <p>Bug reports, feature ideas, or just to say it's useful — always happy to hear from fellow Osmose players.</p>
-        <br>
-        <a href="mailto:seraphinomate@yahoo.fr">seraphinomate@yahoo.fr</a>
+        <p>Bug reports, feature ideas, or just to say it's useful — always happy to hear from
+        fellow Osmose players.</p>
+        <p><a href="mailto:seraphinomate@yahoo.fr">seraphinomate@yahoo.fr</a></p>
       </div>
-
     </div>
 
-    <!-- KO-FI SUPPORT BLOCK -->
-    <div class="kofi-block">
-      <div class="kofi-left">
-        <span class="kofi-icon">☕</span>
-        <div>
-          <div class="kofi-title">This tool took a lot of hours.</div>
-          <div class="kofi-sub">It's free and always will be — but if it saved you time or made your Osmose sessions better, a small contribution means a lot.</div>
-        </div>
-      </div>
-      <a href="https://ko-fi.com/seraphinomate" class="kofi-btn" target="_blank" rel="noopener">
-        Support the project · Ko-fi
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:14px;height:14px;flex-shrink:0">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-          <polyline points="15 3 21 3 21 9"/>
-          <line x1="10" y1="14" x2="21" y2="3"/>
-        </svg>
-      </a>
+    <div class="kofi">
+      <h3>This tool took a lot of hours</h3>
+      <p>It's free and always will be. If it saved you time or made your Osmose sessions
+      better, a small contribution means a lot.</p>
+      <a class="btn btn-s" href="https://ko-fi.com/seraphinomate" style="margin-top:8px">Support the project on Ko-fi</a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <span class="footer-copy">© 2026 Jonathan Pulichino · OSM Sound Manager</span>
-    <span class="footer-note">
-      Not affiliated with <a href="https://www.expressivee.com" target="_blank" rel="noopener">Expressive E</a>. Made with ♥ for the community.
-    </span>
-  </footer>
+<footer>
+  <div class="shell">
+    © 2026 Jonathan Pulichino · Osmose Sound Manager<br>
+    Not affiliated with <a href="https://www.expressivee.com">Expressive E</a> or Haken Audio.
+    Made for the community.
+  </div>
+</footer>
 
-</div>
 </body>
 </html>

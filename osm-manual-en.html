@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osmose Sound Manager · User Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080808;
+  --g0:rgba(255,255,255,0.03); --g1:rgba(255,255,255,0.05);
+  --g2:rgba(255,255,255,0.08); --g3:rgba(255,255,255,0.12);
+  --gb:rgba(255,255,255,0.09); --gb2:rgba(255,255,255,0.16);
+  --acc:#7EB8F7; --acc-glow:rgba(126,184,247,0.25); --acc2:#A78BFA;
+  --gold:#f0b429;
+  --t0:rgba(255,255,255,0.93); --t1:rgba(255,255,255,0.56);
+  --t2:rgba(255,255,255,0.30); --t3:rgba(255,255,255,0.14);
+  --ok:#4ade80; --warn:#fbbf24; --err:#f87171;
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--t0);
+  font-family:'DM Sans',-apple-system,system-ui,sans-serif;
+  font-weight:300; font-size:15px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:''; position:fixed; inset:0; background-image:var(--noise);
+  pointer-events:none; z-index:1;
+}
+a{color:var(--acc); text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--acc); outline-offset:3px; border-radius:3px}
+
+/* ── LAYOUT ───────────────────────────────── */
+.wrap{display:flex; max-width:1240px; margin:0 auto; position:relative; z-index:2}
+
+aside{
+  width:236px; flex-shrink:0; position:sticky; top:0; height:100vh;
+  overflow-y:auto; padding:38px 20px 40px 24px;
+  border-right:1px solid var(--gb);
+}
+.side-brand{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.side-dot{width:7px;height:7px;border-radius:50%;background:var(--acc);
+  box-shadow:0 0 10px var(--acc-glow);flex-shrink:0}
+.side-brand span{font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:.09em;color:var(--t1)}
+.side-ver{font-family:'DM Mono',monospace;font-size:10px;color:var(--t2);
+  letter-spacing:.09em;margin-bottom:30px;padding-left:15px}
+.side-grp{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--t2);margin:24px 0 9px}
+aside a{display:block;font-size:13px;color:var(--t1);padding:4.5px 0;
+  border-left:1px solid transparent;padding-left:11px;margin-left:-11px;
+  transition:color .15s,border-color .15s}
+aside a:hover{color:var(--t0);text-decoration:none;border-left-color:var(--g3)}
+
+main{flex:1; min-width:0; padding:0 clamp(20px,5vw,72px) 140px}
+
+/* ── HERO ─────────────────────────────────── */
+.hero{padding:110px 0 74px;border-bottom:1px solid var(--gb)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--t1);
+  border:1px solid var(--gb);border-radius:100px;padding:5px 13px 5px 10px;
+  margin-bottom:30px}
+.eyebrow .d{width:5px;height:5px;border-radius:50%;background:var(--ok)}
+h1{font-size:clamp(40px,6.4vw,68px);font-weight:300;line-height:1.02;
+  letter-spacing:-.032em}
+h1 em{font-style:normal;color:var(--acc);font-weight:400}
+.lede{font-size:17px;color:var(--t1);max-width:57ch;margin-top:24px;line-height:1.62}
+
+/* ── SECTIONS ─────────────────────────────── */
+section{padding:70px 0;border-bottom:1px solid var(--gb)}
+section:last-of-type{border-bottom:none}
+h2{font-size:29px;font-weight:300;letter-spacing:-.02em;margin-bottom:6px}
+.sec-kicker{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--acc);margin-bottom:14px;opacity:.85}
+h3{font-size:16px;font-weight:500;margin:40px 0 12px;letter-spacing:-.005em}
+h4{font-size:13.5px;font-weight:500;margin:26px 0 8px;color:var(--t0)}
+p{color:var(--t1);max-width:70ch;margin-bottom:13px}
+p strong,li strong{color:var(--t0);font-weight:500}
+ul,ol{color:var(--t1);max-width:70ch;margin:0 0 14px 19px}
+li{margin-bottom:7px}
+
+code{font-family:'DM Mono',monospace;font-size:.87em;background:var(--g1);
+  border:1px solid var(--gb);border-radius:4px;padding:1.5px 6px;color:var(--acc)}
+
+/* ── FACT STRIP ───────────────────────────── */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:1px;background:var(--gb);border:1px solid var(--gb);border-radius:10px;
+  overflow:hidden;margin:34px 0 8px}
+.fact{background:var(--bg);padding:19px 18px}
+.fact-v{font-family:'DM Mono',monospace;font-size:22px;color:var(--t0);
+  font-weight:400;line-height:1;margin-bottom:9px}
+.fact-l{font-size:11.5px;color:var(--t2);line-height:1.45}
+
+/* ── TABLES ───────────────────────────────── */
+table{width:100%;border-collapse:collapse;margin:18px 0 22px;font-size:13.5px}
+th{text-align:left;font-family:'DM Mono',monospace;font-size:9.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--t2);
+  font-weight:400;padding:0 14px 9px 0;border-bottom:1px solid var(--gb)}
+td{padding:11px 14px 11px 0;border-bottom:1px solid var(--g0);
+  color:var(--t1);vertical-align:top}
+td:first-child{color:var(--t0);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+
+/* ── CALLOUTS ─────────────────────────────── */
+.note{border-left:2px solid var(--acc);background:var(--g0);
+  padding:15px 18px;border-radius:0 8px 8px 0;margin:22px 0;font-size:14px}
+.note.warn{border-left-color:var(--warn)}
+.note.err{border-left-color:var(--err)}
+.note p{margin:0;color:var(--t1)}
+.note-t{font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--acc);margin-bottom:7px;display:block}
+.note.warn .note-t{color:var(--warn)}
+.note.err .note-t{color:var(--err)}
+
+/* ── STEPS ────────────────────────────────── */
+.steps{list-style:none;margin-left:0;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding-left:38px;
+  margin-bottom:16px;max-width:70ch}
+.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;
+  left:0;top:1px;font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--acc);opacity:.75;letter-spacing:.05em}
+
+/* ── CHIPS ────────────────────────────────── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 20px;max-width:70ch}
+.chip{font-family:'DM Mono',monospace;font-size:11px;color:var(--t1);
+  background:var(--g0);border:1px solid var(--gb);border-radius:100px;
+  padding:3.5px 11px}
+
+/* ── SPIDER DIAGRAM (signature) ───────────── */
+.spider-fig{border:1px solid var(--gb);border-radius:12px;background:
+  radial-gradient(ellipse at 50% 55%,rgba(126,184,247,0.055),transparent 68%);
+  padding:26px 18px 20px;margin:30px 0 24px;overflow-x:auto}
+.spider-fig svg{display:block;margin:0 auto;max-width:100%;height:auto}
+.fig-cap{text-align:center;font-family:'DM Mono',monospace;font-size:10.5px;
+  color:var(--t2);letter-spacing:.06em;margin-top:16px}
+.sp-lbl{font-family:'DM Mono',monospace;font-size:11px;fill:var(--t1)}
+.sp-lbl-dim{font-family:'DM Mono',monospace;font-size:9.5px;fill:var(--t2)}
+.sp-ped{font-family:'DM Mono',monospace;font-size:10px;fill:var(--acc)}
+
+/* ── KEYS ─────────────────────────────────── */
+kbd{font-family:'DM Mono',monospace;font-size:11.5px;background:var(--g1);
+  border:1px solid var(--gb2);border-bottom-width:2px;border-radius:5px;
+  padding:2px 8px;color:var(--t0);white-space:nowrap}
+
+footer{padding:52px 0 0;color:var(--t2);font-size:12.5px}
+footer a{color:var(--t1)}
+
+@media (max-width:900px){
+  aside{display:none}
+  main{padding:0 22px 90px}
+  .hero{padding:64px 0 50px}
+  section{padding:52px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<aside>
+  <div class="side-brand"><span class="side-dot"></span><span>OSMOSE</span></div>
+  <div class="side-ver">V183 · MANUAL</div>
+
+  <div class="side-grp">Start</div>
+  <a href="#about">What OSM is</a>
+  <a href="#setup">Connect your Osmose</a>
+
+  <div class="side-grp">Tabs</div>
+  <a href="#library">Library</a>
+  <a href="#macros">Macro panel</a>
+  <a href="#spider">Spider · pedal routing</a>
+  <a href="#playlists">Playlists</a>
+  <a href="#synth">Synth</a>
+  <a href="#discover">Discover</a>
+  <a href="#settings">Settings</a>
+
+  <div class="side-grp">Reference</div>
+  <a href="#saving">Saving your work</a>
+  <a href="#keys">Keyboard shortcuts</a>
+  <a href="#midi">MIDI reference</a>
+</aside>
+
+<main>
+
+<div class="hero">
+  <div class="eyebrow"><span class="d"></span>OSM · Osmose Sound Manager</div>
+  <h1>Play your Osmose<br>from <em>one screen</em>.</h1>
+  <p class="lede">OSM is a single-file web app that turns your browser into a library,
+  a playlist player, and a control surface for the Expressive E Osmose — including
+  expression-pedal routing the instrument can't do on its own.</p>
+
+  <div class="facts">
+    <div class="fact"><div class="fact-v">609</div>
+      <div class="fact-l">Factory + Expansion 01 presets, classified and tagged</div></div>
+    <div class="fact"><div class="fact-v">8</div>
+      <div class="fact-l">Pedal destinations: 6 macros, FX Mix, Postgain</div></div>
+    <div class="fact"><div class="fact-v">5</div>
+      <div class="fact-l">Tabs: Library, Playlists, Discover, Synth, Settings</div></div>
+    <div class="fact"><div class="fact-v">1</div>
+      <div class="fact-l">HTML file — no install, no account, works offline</div></div>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="sec-kicker">Start</div>
+  <h2>What OSM is</h2>
+  <p>OSM runs entirely in your browser and talks to the Osmose over <strong>Web MIDI</strong>.
+  It doesn't edit sounds — the EaganMatrix engine stays where it is. What it gives you is
+  everything <em>around</em> the sound: finding it, organising it, recalling it, and shaping
+  it live with a pedal.</p>
+
+  <p>Three things it does that the instrument itself cannot:</p>
+  <ul>
+    <li><strong>Search and filter 609 presets</strong> instead of scrolling an encoder.</li>
+    <li><strong>Remember macro positions per preset</strong>, with named snapshots you can recall.</li>
+    <li><strong>Route an expression pedal</strong> to any combination of the six macros,
+      FX Mix and Postgain, each with its own travel range.</li>
+  </ul>
+
+  <div class="note warn">
+    <span class="note-t">Browser support</span>
+    <p>Chrome or Edge on desktop only. The Web MIDI API is not implemented in Safari or
+    on any iOS/iPadOS browser — on an iPad every browser is Safari underneath, so OSM
+    cannot work there. Firefox requires the MIDI permission prompt to be accepted.</p>
+  </div>
+</section>
+
+<!-- ══ SETUP ══ -->
+<section id="setup">
+  <div class="sec-kicker">Start</div>
+  <h2>Connect your Osmose</h2>
+
+  <ol class="steps">
+    <li>Open <code>osmose-sound-manager_V183.html</code> in Chrome or Edge.</li>
+    <li>Connect the Osmose over USB and switch it on.</li>
+    <li>Accept the browser's MIDI permission prompt. If you block it, OSM cannot send anything.</li>
+    <li>Go to <strong>Settings</strong> and pick your <strong>Osmose Firmware</strong> —
+      v2.1 (609 presets), v2.0 (529) or v1.x.</li>
+    <li>Under <strong>MIDI Output</strong>, choose port 2. On macOS it appears as
+      <code>Osmose Port 2</code>; on Windows as <code>MIDIOUT2 (Osmose)</code>.</li>
+    <li>Return to <strong>Library</strong> and click any card. The Osmose should change sound
+      immediately.</li>
+  </ol>
+
+  <p>The indicator at the top right shows the connection at a glance: green when a port is
+  open, red on error, dim when nothing is selected. Click it to jump straight to Settings.</p>
+
+  <div class="note err">
+    <span class="note-t">Port 2 matters</span>
+    <p>Port 1 carries note data. Preset changes and control messages only reach the sound
+    engine on port 2 — the Haken port. If presets don't switch, this is almost always why.</p>
+  </div>
+</section>
+
+<!-- ══ LIBRARY ══ -->
+<section id="library">
+  <div class="sec-kicker">Tabs</div>
+  <h2>Library</h2>
+  <p>The Library shows every preset as a card. Click a card and OSM sends a Bank Select
+  followed by a Program Change — the Osmose loads the sound. The active card keeps a lit outline.</p>
+
+  <h3>Search</h3>
+  <p>The search field filters in real time across preset <strong>name</strong>,
+  <strong>type</strong> and <strong>tags</strong>. It combines with the filter bars rather
+  than replacing them.</p>
+
+  <h3>Three filter levels</h3>
+  <p>Bank, type and character stack with AND logic: a preset must match the selected bank,
+  the selected type, <em>and</em> every active character to stay visible.</p>
+
+  <table>
+    <tr><th>Level</th><th>What it does</th></tr>
+    <tr><td>Bank</td><td>All banks, Factory, or Expansion 01</td></tr>
+    <tr><td>Type</td><td>One of 14 instrument families, plus All and ★ Favorites. Single choice.</td></tr>
+    <tr><td>Character</td><td>39 descriptors, multi-select. A <code>× N</code> button clears them all.</td></tr>
+  </table>
+
+  <div class="chips">
+    <span class="chip">Bass</span><span class="chip">Bowed</span><span class="chip">Brass</span>
+    <span class="chip">Demos</span><span class="chip">Elec Piano</span><span class="chip">Flute Reeds</span>
+    <span class="chip">Keys</span><span class="chip">Lead</span><span class="chip">Mallets</span>
+    <span class="chip">Organ</span><span class="chip">Pads</span><span class="chip">Perc</span>
+    <span class="chip">Plucked</span><span class="chip">SFX</span>
+  </div>
+
+  <div class="note">
+    <span class="note-t">Dead ends are hidden</span>
+    <p>Choosing a type narrows the character bar to characters that actually exist in that
+    type, so you can't build a combination that returns nothing. Characters you've already
+    selected always stay visible so you can switch them off again.</p>
+  </div>
+
+  <h3>Card controls</h3>
+  <table>
+    <tr><th>Control</th><th>Action</th></tr>
+    <tr><td>Click the card</td><td>Load the preset on the Osmose</td></tr>
+    <tr><td>★ (top right)</td><td>Add to or remove from Favorites</td></tr>
+    <tr><td>⊙ (bottom right)</td><td>Open the Macro panel for this preset; click again to close</td></tr>
+    <tr><td>⋮ menu</td><td><strong>Category</strong> — change assigned types ·
+      <strong>Edit</strong> — rename and add notes ·
+      <strong>Preset Info</strong> — full record with CC0, PC, tags, date added</td></tr>
+  </table>
+
+  <p>Factory CC0 and PC values are locked so MIDI compatibility survives. Names, notes and
+  categories are yours to change.</p>
+</section>
+
+<!-- ══ MACROS ══ -->
+<section id="macros">
+  <div class="sec-kicker">Tabs</div>
+  <h2>Macro panel</h2>
+  <p>The floating panel controls the six macros of the active preset — <code>CC12</code> to
+  <code>CC17</code> — without leaving the grid. Open it from any card's ⊙ button, or from the
+  floating button in the Playlists tab. <kbd>Esc</kbd> closes it.</p>
+
+  <table>
+    <tr><th>Gesture</th><th>Result</th></tr>
+    <tr><td>Drag up / down</td><td>Change the value, 0–127, sent live</td></tr>
+    <tr><td>Double-click a knob</td><td>Return it to its neutral value</td></tr>
+    <tr><td>Click the label</td><td>Rename that macro — the name is saved per preset</td></tr>
+  </table>
+
+  <h3>Snapshots</h3>
+  <p>A snapshot stores the six macro values <em>and</em> the current Spider routing for a
+  preset. Every preset has its own set.</p>
+  <ul>
+    <li><strong>+ snap</strong> captures the current state as <code>Snap 1</code>, <code>Snap 2</code>…</li>
+    <li>Click a snapshot to recall it and send the values.</li>
+    <li>Right-click or use the snapshot's menu for <strong>Rename</strong>,
+      <strong>Save as preset</strong> and <strong>Delete</strong>.</li>
+    <li>A snapshot pill marks itself as modified once you move a knob away from it.</li>
+  </ul>
+
+  <h3>Panel buttons</h3>
+  <table>
+    <tr><th>Button</th><th>What it does</th></tr>
+    <tr><td>Factory defaults</td><td>Set your own neutral values for this preset — six macros
+      plus FX and Postgain. Leave every field empty to clear them.</td></tr>
+    <tr><td>Reset</td><td>Return all macros to their factory values</td></tr>
+    <tr><td>❄ Freeze</td><td>Keep the current macro positions when you switch presets, instead
+      of restoring each preset's own values</td></tr>
+    <tr><td>⊹ To Spider</td><td>Push the current macro values into Spider as its targets</td></tr>
+    <tr><td>Pedal</td><td>Open the Spider zone (see below)</td></tr>
+  </table>
+
+  <div class="note">
+    <span class="note-t">Per-preset memory</span>
+    <p>When you leave a preset, its macro values are stored. Coming back restores them and
+    re-sends them to the Osmose about 150 ms after the Program Change. Freeze is the switch
+    that suspends this behaviour.</p>
+  </div>
+</section>
+
+<!-- ══ SPIDER ══ -->
+<section id="spider">
+  <div class="sec-kicker">Tabs · signature feature</div>
+  <h2>Spider — pedal routing</h2>
+  <p>The Osmose sends expression-pedal data, but it can't fan that one pedal out to several
+  destinations with independent ranges. Spider does. One pedal sweep can open a filter macro,
+  pull back Postgain and lift FX Mix at the same time — each on its own travel.</p>
+
+  <div class="spider-fig">
+    <svg viewBox="0 0 640 300" role="img" aria-label="Diagram: one pedal CC feeding eight targets, each with its own minimum and maximum">
+      <defs>
+        <linearGradient id="sl" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#7EB8F7" stop-opacity=".85"/>
+          <stop offset="100%" stop-color="#7EB8F7" stop-opacity=".22"/>
+        </linearGradient>
+        <linearGradient id="sr" x1="100%" y1="0%" x2="0%" y2="0%">
+          <stop offset="0%" stop-color="#7EB8F7" stop-opacity=".22"/>
+          <stop offset="100%" stop-color="#7EB8F7" stop-opacity=".85"/>
+        </linearGradient>
+      </defs>
+
+      <!-- left targets -->
+      <g stroke="url(#sl)" fill="none" stroke-width="1.2">
+        <path d="M180 44 C250 44 262 128 316 150"/>
+        <path d="M180 106 C250 106 268 136 316 150"/>
+        <path d="M180 168 C250 168 268 158 316 150"/>
+        <path d="M180 230 C250 230 262 172 316 150"/>
+      </g>
+      <!-- right targets -->
+      <g stroke="url(#sr)" fill="none" stroke-width="1.2">
+        <path d="M460 44 C390 44 378 128 324 150"/>
+        <path d="M460 106 C390 106 372 136 324 150"/>
+        <path d="M460 168 C390 168 372 158 324 150"/>
+        <path d="M460 230 C390 230 378 172 324 150"/>
+      </g>
+
+      <!-- left knobs -->
+      <g>
+        <circle cx="160" cy="44"  r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M160 27 A17 17 0 0 1 174 52" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="132" y="48" text-anchor="end">M1 · CC12</text>
+        <circle cx="160" cy="106" r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M160 89 A17 17 0 0 1 177 106" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="132" y="110" text-anchor="end">M2 · CC13</text>
+        <circle cx="160" cy="168" r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M160 151 A17 17 0 0 1 172 178" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="132" y="172" text-anchor="end">M3 · CC14</text>
+        <circle cx="160" cy="230" r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M160 213 A17 17 0 0 1 176 224" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="132" y="234" text-anchor="end">M4 · CC15</text>
+      </g>
+
+      <!-- right knobs -->
+      <g>
+        <circle cx="480" cy="44"  r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M480 27 A17 17 0 0 1 494 52" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="508" y="48">M5 · CC16</text>
+        <circle cx="480" cy="106" r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M480 89 A17 17 0 0 1 497 106" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="508" y="110">M6 · CC17</text>
+        <circle cx="480" cy="168" r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M480 151 A17 17 0 0 1 492 178" fill="none" stroke="#7EB8F7" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="508" y="172">FX Mix · CC24</text>
+        <circle cx="480" cy="230" r="17" fill="none" stroke="rgba(255,255,255,.12)"/>
+        <path d="M480 213 A17 17 0 0 1 496 224" fill="none" stroke="#f0b429" stroke-width="2.4" stroke-linecap="round"/>
+        <text class="sp-lbl" x="508" y="234">Postgain · CC18</text>
+      </g>
+
+      <!-- center pedal -->
+      <circle cx="320" cy="150" r="40" fill="none" stroke="rgba(255,255,255,.10)"/>
+      <path d="M320 110 A40 40 0 1 1 292 178" fill="none" stroke="#7EB8F7" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+      <text class="sp-ped" x="320" y="146" text-anchor="middle">PEDAL</text>
+      <text class="sp-lbl-dim" x="320" y="162" text-anchor="middle">CC11 default</text>
+      <text class="sp-lbl-dim" x="320" y="216" text-anchor="middle">each line carries its own MIN → MAX</text>
+    </svg>
+    <div class="fig-cap">One incoming CC · eight possible destinations · independent ranges</div>
+  </div>
+
+  <h3>Setting it up</h3>
+  <ol class="steps">
+    <li>Open the Macro panel and click <strong>Pedal</strong> to reveal the Spider zone.</li>
+    <li>Pick the incoming controller under <strong>Source CC</strong>: Mod Wheel (CC1),
+      Breath (CC2), Foot (CC4), Volume (CC7), Expression (CC11, the default) or Timbre (CC74).</li>
+    <li>Click a destination to switch it on. Eight are available: M1–M6, FX Mix and Postgain.</li>
+    <li>Press <strong>▼ MIN</strong> and set where each destination sits with the pedal fully up.</li>
+    <li>Press <strong>▲ MAX</strong> and set where it should land with the pedal fully down.</li>
+    <li>Sweep the pedal. Each destination travels its own range; the ring in the middle tracks
+      the incoming value.</li>
+  </ol>
+
+  <p>A destination whose MIN is higher than its MAX simply runs backwards — useful for
+  trading one macro against another across a single sweep.</p>
+
+  <div class="note">
+    <span class="note-t">Saved with the snapshot</span>
+    <p>Spider routing is stored inside the snapshot, not globally. Two snapshots on the same
+    preset can use completely different pedal maps, and switching between them switches
+    the routing too.</p>
+  </div>
+</section>
+
+<!-- ══ PLAYLISTS ══ -->
+<section id="playlists">
+  <div class="sec-kicker">Tabs</div>
+  <h2>Playlists</h2>
+  <p>Ordered sets of presets for a set list, a session, or any theme. The sidebar lists them
+  with a colour dot and a count; <strong>Favorites</strong> mirrors the stars in the Library
+  automatically.</p>
+
+  <h3>Building one</h3>
+  <ol class="steps">
+    <li>Click <strong>+</strong> at the top of the sidebar.</li>
+    <li>Name it, pick a colour, add an optional description.</li>
+    <li>From the Library, use a card's ⋮ menu to add presets. One preset can sit in several
+      playlists at once.</li>
+  </ol>
+
+  <h3>Playing and editing</h3>
+  <table>
+    <tr><th>Control</th><th>Action</th></tr>
+    <tr><td>◀ / ▶</td><td>Previous / next preset in the list</td></tr>
+    <tr><td>⇄</td><td>Play a random preset from the list</td></tr>
+    <tr><td>Click a row</td><td>Play that preset</td></tr>
+    <tr><td>⠿ handle</td><td>Drag to reorder</td></tr>
+    <tr><td>··· on a row</td><td>Copy this preset into another playlist, keeping it here</td></tr>
+    <tr><td>× on a row</td><td>Remove from the playlist — the preset stays in the Library</td></tr>
+    <tr><td>Click the title</td><td>Rename the playlist</td></tr>
+  </table>
+
+  <p>The floating macro button at the bottom right opens the Macro panel for whatever is
+  currently playing, so you can shape a sound without leaving the list.</p>
+</section>
+
+<!-- ══ SYNTH ══ -->
+<section id="synth">
+  <div class="sec-kicker">Tabs</div>
+  <h2>Synth</h2>
+  <p>Full-size versions of the six macros, plus every global control OSM can reach. Everything
+  here sends immediately.</p>
+
+  <table>
+    <tr><th>CC</th><th>Control</th><th>Range</th></tr>
+    <tr><td><code>12–17</code></td><td>Macros 1–6</td><td>0–127</td></tr>
+    <tr><td><code>26</code></td><td>Pregain</td><td>0–127</td></tr>
+    <tr><td><code>18</code></td><td>Postgain</td><td>0–127</td></tr>
+    <tr><td><code>20–23</code></td><td>FX Param 1–4</td><td>0–127</td></tr>
+    <tr><td><code>24</code></td><td>FX Mix</td><td>0–127</td></tr>
+    <tr><td><code>83</code></td><td>EQ Tilt (bass/treble)</td><td>0–127</td></tr>
+    <tr><td><code>84</code></td><td>EQ Pivot frequency</td><td>0–127</td></tr>
+    <tr><td><code>85</code></td><td>EQ Mix</td><td>0–127</td></tr>
+    <tr><td><code>93</code></td><td>Compressor Mix</td><td>0–127</td></tr>
+    <tr><td><code>64</code></td><td>Sustain</td><td>toggle</td></tr>
+    <tr><td><code>66</code> / <code>69</code></td><td>Sostenuto 1 / 2</td><td>toggle</td></tr>
+  </table>
+
+  <p>If an external controller is connected, its name appears at the top of the tab and its
+  incoming CCs move these controls live.</p>
+</section>
+
+<!-- ══ DISCOVER ══ -->
+<section id="discover">
+  <div class="sec-kicker">Tabs</div>
+  <h2>Discover</h2>
+  <p>One button, one die. Each press picks a random position in the whole preset range and
+  loads it. If the preset exists in your library, its card appears below with name, CC0, PC
+  and tags; if it doesn't, OSM still sends the raw Bank Select and Program Change so you hear it.</p>
+
+  <p>The range follows the firmware set in Settings: 609 positions on v2.1, 529 on v2.0.
+  It's the fastest way to stumble into sounds you'd never have filtered your way to.</p>
+</section>
+
+<!-- ══ SETTINGS ══ -->
+<section id="settings">
+  <div class="sec-kicker">Tabs</div>
+  <h2>Settings</h2>
+
+  <h3>MIDI</h3>
+  <table>
+    <tr><th>Setting</th><th>Notes</th></tr>
+    <tr><td>Osmose Firmware</td><td>v2.1 (609 presets), v2.0 (529) or v1.x. Sets the Discover range.</td></tr>
+    <tr><td>MIDI Output</td><td>Port 2 to the Osmose. <code>Osmose Port 2</code> on macOS,
+      <code>MIDIOUT2 (Osmose)</code> on Windows.</td></tr>
+    <tr><td>CC Controller 1 &amp; 2</td><td>Up to two external controllers can be connected.
+      Their incoming CCs move the on-screen controls.</td></tr>
+    <tr><td>MIDI Channel</td><td>Channel used for sending. Must match the Osmose.</td></tr>
+    <tr><td>Enable MIDI routing</td><td>Forward controller CCs straight through to the Osmose.
+      Map your controller's knobs to CC12–17 to drive the macros physically.</td></tr>
+  </table>
+
+  <h3>CC filter</h3>
+  <p>A switch per control message. Turning one off stops OSM sending that CC entirely — useful
+  when a controller sends something the Osmose interprets in a way you don't want. Twenty
+  messages are listed, matching the table in the <a href="#midi">MIDI reference</a>.</p>
+
+  <h3>Data</h3>
+  <table>
+    <tr><th>Action</th><th>Effect</th></tr>
+    <tr><td>Export JSON</td><td>Download <code>osm-session.json</code> — presets, playlists,
+      macros, snapshots, labels, settings</td></tr>
+    <tr><td>Restore backup</td><td>Load a previously exported <code>osm-session.json</code></td></tr>
+    <tr><td>Reload 609 factory presets</td><td>Restore the factory list, keeping favorites,
+      notes and playlists</td></tr>
+    <tr><td>Clear everything</td><td>Wipe all data and start from zero</td></tr>
+  </table>
+</section>
+
+<!-- ══ SAVING ══ -->
+<section id="saving">
+  <div class="sec-kicker">Reference</div>
+  <h2>Saving your work</h2>
+  <p>OSM saves continuously to your browser's local storage under two keys —
+  <code>osm_v1</code> for presets and playlists, <code>opm_synth_v1</code> for macros,
+  snapshots, labels and MIDI settings. Older <code>opm_v2</code> backups are migrated on load.</p>
+
+  <div class="note err">
+    <span class="note-t">Local storage is fragile</span>
+    <p>It belongs to one browser profile. Clearing site data, using private browsing, or
+    opening the file from a different Chrome profile gives you an empty library — the old
+    data isn't lost, it's simply in another bucket you're no longer looking at. Export
+    regularly. It's the only real backup.</p>
+  </div>
+
+  <h3>The unsaved-changes indicator</h3>
+  <p>Any change since your last export raises a flag: an orange dot on the Export button and
+  a red line in Settings. Closing the tab with the flag raised triggers a browser confirmation
+  first. Export once and both clear.</p>
+
+  <h3>Empty-session prompt</h3>
+  <p>If OSM starts with no stored data at all, a banner offers to import your
+  <code>osm-session.json</code> straight away. Dismiss it if you really are starting fresh.</p>
+
+  <p>Because the export always uses the same filename, you end up with one canonical session
+  file that you overwrite — rather than a folder of dated exports you have to choose between.</p>
+</section>
+
+<!-- ══ KEYS ══ -->
+<section id="keys">
+  <div class="sec-kicker">Reference</div>
+  <h2>Keyboard shortcuts</h2>
+  <p>These drive the <strong>active playlist</strong>, wherever you are in the app. They're
+  ignored while you're typing in a field.</p>
+
+  <table>
+    <tr><th>Key</th><th>Action</th></tr>
+    <tr><td><kbd>→</kbd> or <kbd>Tab</kbd></td><td>Next preset in the active playlist</td></tr>
+    <tr><td><kbd>←</kbd> or <kbd>⇧ Tab</kbd></td><td>Previous preset in the active playlist</td></tr>
+    <tr><td><kbd>R</kbd></td><td>Random preset from the active playlist</td></tr>
+    <tr><td><kbd>Space</kbd></td><td>Replay the current preset</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>Close the Macro panel, a card menu, or any open popover</td></tr>
+  </table>
+
+  <div class="note">
+    <span class="note-t">On stage</span>
+    <p>Arrow keys plus <kbd>Space</kbd> mean a playlist can be run from a page-turner pedal or
+    any keyboard remote without touching the screen.</p>
+  </div>
+</section>
+
+<!-- ══ MIDI ══ -->
+<section id="midi">
+  <div class="sec-kicker">Reference</div>
+  <h2>MIDI reference</h2>
+
+  <h3>How a preset is sent</h3>
+  <ol class="steps">
+    <li><strong>CC0 (Bank Select)</strong> with the preset's bank value, between 30 and 34.</li>
+    <li><strong>Program Change</strong> with the preset's program number, 0–127.</li>
+    <li>About 150 ms later, the macro values stored for that preset are re-sent on CC12–17.</li>
+  </ol>
+
+  <h3>Messages OSM will send</h3>
+  <p>OSM only ever transmits control messages from this list. Anything outside it is blocked
+  before it reaches the instrument, so a stray controller CC can't disturb the EaganMatrix.</p>
+
+  <div class="chips">
+    <span class="chip">12–17 Macros</span><span class="chip">18 Postgain</span>
+    <span class="chip">20–23 FX Params</span><span class="chip">24 FX Mix</span>
+    <span class="chip">26 Pregain</span><span class="chip">64 Sustain</span>
+    <span class="chip">66 Sostenuto 1</span><span class="chip">69 Sostenuto 2</span>
+    <span class="chip">83 EQ Tilt</span><span class="chip">84 EQ Freq</span>
+    <span class="chip">85 EQ Mix</span><span class="chip">93 Comp Mix</span>
+  </div>
+
+  <p>Each of these can be switched off individually in the <a href="#settings">CC filter</a>.</p>
+
+  <h3>If nothing happens</h3>
+  <ul>
+    <li>Check you selected <strong>port 2</strong>, not port 1.</li>
+    <li>Check the MIDI channel matches the instrument.</li>
+    <li>Check the firmware setting matches the Osmose — the preset numbering changed between
+      v1.x and v2.x, so a mismatch sends valid messages to the wrong sounds.</li>
+    <li>Reload the page if you connected the Osmose after opening OSM.</li>
+  </ul>
+
+  <footer>
+    Osmose Sound Manager — V183 · Built for the Osmose community.<br>
+    Not affiliated with Expressive E or Haken Audio.
+  </footer>
+</section>
+
+</main>
+</div>
+</body>
+</html>
