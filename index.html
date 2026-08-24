@@ -99,13 +99,6 @@ p strong{color:var(--t0);font-weight:500}
   letter-spacing:.1em;opacity:.7;display:block;margin-bottom:11px}
 .cell p{font-size:13.5px;margin:0;color:var(--t1)}
 
-/* NEW LIST */
-.new{list-style:none;margin-top:28px;max-width:70ch}
-.new li{display:flex;gap:14px;padding:13px 0;border-bottom:1px solid var(--g0);
-  font-size:14px;color:var(--t1)}
-.new li:last-child{border-bottom:none}
-.new b{color:var(--t0);font-weight:500;flex-shrink:0;min-width:132px}
-
 /* REQ */
 .req{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:22px;margin-top:30px}
 .req div{border-left:2px solid var(--gb);padding-left:15px}
@@ -114,14 +107,25 @@ p strong{color:var(--t0);font-weight:500}
 .req .v{font-size:14px;color:var(--t0)}
 .req .s{font-size:12.5px;color:var(--t2);margin-top:3px}
 
+/* SUPPORT */
+.support{border:1px solid rgba(240,180,41,.30);border-radius:14px;
+  padding:38px 34px;margin-top:8px;
+  background:radial-gradient(ellipse at 12% 0%,rgba(240,180,41,.09),transparent 62%),var(--g0)}
+.support .kick{color:var(--gold)}
+.support h2{margin-bottom:12px}
+.support p{max-width:60ch}
+.btn-k{background:var(--gold);color:#1c1403;border-color:var(--gold)}
+.btn-k:hover{background:#f7c64f;text-decoration:none}
+.sup-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:26px}
+.sup-row .cta-note{color:var(--t2)}
+.sup-why{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:20px;margin-top:30px;padding-top:26px;border-top:1px solid rgba(255,255,255,.07)}
+.sup-why div{font-size:13px;color:var(--t1)}
+.sup-why b{display:block;color:var(--t0);font-weight:500;font-size:13px;margin-bottom:3px}
+
 /* ABOUT */
 .about{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:34px;margin-top:34px}
 .about p{font-size:14px}
-
-/* KOFI */
-.kofi{border:1px solid var(--gb);border-radius:12px;padding:30px 28px;margin-top:38px;
-  background:var(--g0)}
-.kofi h3{font-size:17px;font-weight:400;margin-bottom:9px}
 
 footer{padding:40px 0 60px;color:var(--t2);font-size:12.5px;line-height:1.8}
 footer a{color:var(--t1)}
@@ -145,8 +149,8 @@ footer a{color:var(--t1)}
     <div class="brand"><i></i>Osmose <em>· Sound Manager</em></div>
     <div class="nav-l">
       <a href="#what">Features</a>
-      <a href="#new">What's new</a>
       <a href="#get">Download</a>
+      <a href="#support">Support</a>
       <a href="#about">Contact</a>
     </div>
   </div>
@@ -235,7 +239,8 @@ footer a{color:var(--t1)}
         by 39 character tags at once — combinations that return nothing are hidden as you go.</p></div>
       <div class="cell"><span class="n">02</span><h3>Macro memory</h3>
         <p>Six macros per preset, remembered and re-sent when you come back. Name them, save
-        named snapshots, and freeze positions across preset changes.</p></div>
+        named snapshots, set your own neutral starting point, and freeze positions across
+        preset changes.</p></div>
       <div class="cell"><span class="n">03</span><h3>Spider pedal routing</h3>
         <p>Send one expression pedal to any of six macros plus FX Mix and Postgain, each with
         its own minimum and maximum. Reverse a range and two parameters trade against each
@@ -253,31 +258,6 @@ footer a{color:var(--t1)}
   </div>
 </section>
 
-<section id="new">
-  <div class="shell">
-    <div class="kick">What's new</div>
-    <h2>Since the first release</h2>
-    <p>If you downloaded OSM before, this version is a long way ahead of it.</p>
-
-    <ul class="new">
-      <li><b>Spider</b><span>Expression-pedal routing to six macros, FX Mix and Postgain, with
-        per-destination MIN and MAX. Saved inside each snapshot, so two snapshots on one preset
-        can use different pedal maps.</span></li>
-      <li><b>Snapshots</b><span>Named macro states per preset, with rename, delete, and save
-        a snapshot as a new preset.</span></li>
-      <li><b>Neutral values</b><span>Set your own starting point per preset — six macros plus
-        FX and Postgain — instead of the factory centre.</span></li>
-      <li><b>Freeze macros</b><span>Keep macro positions when changing preset, for sweeps that
-        carry across sounds.</span></li>
-      <li><b>Synth tab</b><span>Full-size macros and every global control, with a CC filter to
-        block any message you don't want sent.</span></li>
-      <li><b>Two controllers</b><span>Connect up to two external MIDI controllers and route
-        them straight through to the Osmose.</span></li>
-      <li><b>Session safety</b><span>One canonical <code>osm-session.json</code> export, an
-        unsaved-changes indicator, and a warning before you close the tab with work pending.</span></li>
-    </ul>
-  </div>
-</section>
 
 <section id="get">
   <div class="shell">
@@ -305,6 +285,30 @@ footer a{color:var(--t1)}
   </div>
 </section>
 
+<section id="support">
+  <div class="shell">
+    <div class="support">
+      <div class="kick">Support</div>
+      <h2>Downloaded it? This is the part that keeps it going.</h2>
+      <p>Osmose Sound Manager is free and stays free — no licence, no trial, no locked
+      features. It also took hundreds of hours of evenings and weekends, and it's maintained
+      by one person with one Osmose.</p>
+      <p>If it saves you time, a coffee's worth is a real vote for the next version.</p>
+
+      <div class="sup-row">
+        <a class="btn btn-k" href="https://ko-fi.com/seraphinomate">Buy me a coffee on Ko-fi</a>
+        <span class="cta-note">One-off · no account needed · from €3</span>
+      </div>
+
+      <div class="sup-why">
+        <div><b>Stays free</b>Every feature, for everyone, no paid tier — ever.</div>
+        <div><b>Funds the next build</b>Feature requests get built faster when the hours are covered.</div>
+        <div><b>No trackers</b>No ads, no analytics, no account. Support is the only model.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="about">
   <div class="shell">
     <div class="kick">About</div>
@@ -325,12 +329,6 @@ footer a{color:var(--t1)}
       </div>
     </div>
 
-    <div class="kofi">
-      <h3>This tool took a lot of hours</h3>
-      <p>It's free and always will be. If it saved you time or made your Osmose sessions
-      better, a small contribution means a lot.</p>
-      <a class="btn btn-s" href="https://ko-fi.com/seraphinomate" style="margin-top:8px">Support the project on Ko-fi</a>
-    </div>
   </div>
 </section>
 
@@ -338,7 +336,8 @@ footer a{color:var(--t1)}
   <div class="shell">
     © 2026 Jonathan Pulichino · Osmose Sound Manager<br>
     Not affiliated with <a href="https://www.expressivee.com">Expressive E</a> or Haken Audio.
-    Made for the community.
+    Made for the community.<br>
+    Free forever — <a href="https://ko-fi.com/seraphinomate">support the project on Ko-fi</a>.
   </div>
 </footer>
 
